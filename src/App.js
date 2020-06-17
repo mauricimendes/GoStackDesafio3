@@ -14,20 +14,19 @@ import {
 export default function App() {
 
   const [repositories, setRepositories] = useState([])
-  const [likes, setLikes] = useState(false)
 
 	useEffect(() => {
 		api.get('repositories').then(response => {
 			setRepositories(response.data)
     })
-    if(likes) {
-      setLikes(false)
-    }
-	}, [likes])
+	}, [])
 
 	async function handleLikeRepository(id) {
-    await api.post(`repositories/${id}/like`)
-    setLikes(true)
+    const response = await api.post(`repositories/${id}/like`)
+    const index = repositories.findIndex(repository => repository.id === id)
+    const newRepositories = [...repositories]
+    newRepositories[index]['likes'] = response.data.likes
+    setRepositories(newRepositories)
   }
 
 	return (
