@@ -13,22 +13,22 @@ import {
 
 export default function App() {
 
-	const [repositories, setRepositories] = useState([])
-	const [like, setLike] = useState(false)
+  const [repositories, setRepositories] = useState([])
+  const [likes, setLikes] = useState(false)
 
 	useEffect(() => {
 		api.get('repositories').then(response => {
 			setRepositories(response.data)
-			setLike(false)
-		})
-	}, [like, []])
+    })
+    if(likes) {
+      setLikes(false)
+    }
+	}, [likes])
 
 	async function handleLikeRepository(id) {
-		const response = await api.post(`repositories/${id}/like`)
-		const repository = response.data
-		if(!repository) { alert('error') }
-		setLike(true)
-	}
+    await api.post(`repositories/${id}/like`)
+    setLikes(true)
+  }
 
 	return (
 		<>
@@ -53,7 +53,7 @@ export default function App() {
 									style={styles.likeText}
 									testID={`repository-likes-${repository.id}`}
 								>
-									{repository.likes} Curtidas
+									{repository.likes} {repository.likes > 1 ? 'curtidas' : 'curtida'}
 								</Text>
 							</View>
 							<TouchableOpacity
